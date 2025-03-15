@@ -5,6 +5,17 @@ BRANCH="main"
 USER="8lkc"
 MAIL="papebilalysow@gmail.com"
 
+# Define log function
+log() {
+    echo -e "\033[0;34m[*]\033[0m $*"
+}
+
+# Define error function
+error() {
+    echo -e "\033[0;31m[!]\033[0m $*"
+    exit 1
+}
+
 # Checks if there is already a USER and MAIL in configuration...
 # If no USER or MAIL if found, it will config it...
 log "\nChecking credentials..."

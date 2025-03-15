@@ -1,3 +1,7 @@
+use kernel::Shell;
+
+mod kernel;
+
 fn main() {
-    println!("Hello, world!");
+    Shell::launch();
 }

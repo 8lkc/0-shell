@@ -1,5 +1,4 @@
-use dirs;
-use std::io::{self, Write};
+use std::{env, io::{self, Write}, path};
 
 pub struct Shell;
 
@@ -16,22 +15,28 @@ impl Shell {
             if input.trim() == "exit" { break; }
 
             if !input.trim().is_empty() {
-                println!("_> {}", input.trim());
+                println!("Command '{}' not found", input.trim());
             }
         }
     }
 
     fn show_prompt() {
-        let home = dirs::home_dir().expect("Could not find home directory");
         let dir = env!("CARGO_MANIFEST_DIR");
-        let dir_path = std::path::Path::new(dir);
+        let dir_path = path::Path::new(dir);
+        let home = env::var("HOME").or_else(|_| env::var("USERPROFILE")).ok();
 
-        if let Ok(relative_path) = dir_path.strip_prefix(&home) {
-            print!("[~/{}]:~$ ", relative_path.display());
+        if let Some(home) = home {
+            let home_path = path::Path::new(&home);
+            if let Ok(relative_path) = dir_path.strip_prefix(home_path) {
+                print!("[~/{}]:~$ ", relative_path.display());
+            } else {
+                print!("[{}]:~$ ", dir);
+            }
         } else {
-            print!("[~/{}]:~$ ", dir);
+            print!("[{}]:~$ ", dir);
         }
+
         // Flush to ensure the prompt is displayed immediately
-        io::stdout().flush().expect("⚠️ Failed to flush stdout");
+        io::stdout().flush().expect("⚠️ Failed to flush prompt");
     }
 }

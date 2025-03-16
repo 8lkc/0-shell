@@ -12,7 +12,10 @@ impl Shell {
                 .read_line(&mut input)
                 .expect("⚠️ Failed to read line");
 
-            if input.trim() == "exit" { break; }
+            if input.trim() == "exit" {
+                println!();
+                break;
+            }
 
             if !input.trim().is_empty() {
                 println!("Command '{}' not found", input.trim());

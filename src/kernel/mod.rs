@@ -1,13 +1,14 @@
 mod commands;
 
-use std::{env, io::{self, Write}, path};
+use std::{env, fs::File, io::{self, BufRead, Write}, path};
 
 use commands::Command;
 
 pub struct Shell;
 
 impl Shell {
-    pub fn launch() {
+    pub fn launch() -> io::Result<()> {
+        Self::show_header()?;
         loop {
             Self::show_prompt();
 
@@ -17,14 +18,22 @@ impl Shell {
                 .expect("⚠️ Failed to read line");
 
             if input.trim() == "exit" {
-                break;
+                println!();
+                return Ok(());
             }
 
             input = input.trim().to_string();
-            if !input.is_empty() {
-                Command::check(&input);
-            }
+            if !input.is_empty() { Command::check(&input)?; }
         }
+    }
+
+    fn show_header() -> io::Result<()> {
+        println!("\n🚀 Welcome to . . .\n");
+        let file = File::open("assets/header.txt")?;
+        let reader = io::BufReader::new(file);
+        for line in reader.lines() { println!("{}", line?) }
+        println!("\n🔥 Type 'exit' to quit the shell\n");
+        Ok(())
     }
 
     fn show_prompt() {
@@ -36,12 +45,8 @@ impl Shell {
             let home_path = path::Path::new(&home);
             if let Ok(relative_path) = dir_path.strip_prefix(home_path) {
                 print!("[~/{}]:~$ ", relative_path.display());
-            } else {
-                print!("[{}]:~$ ", dir);
-            }
-        } else {
-            print!("[{}]:~$ ", dir);
-        }
+            } else { print!("[{}]:~$ ", dir); }
+        } else { print!("[{}]:~$ ", dir); }
 
         // Flush to ensure the prompt is displayed immediately
         io::stdout().flush().expect("⚠️ Failed to flush prompt");

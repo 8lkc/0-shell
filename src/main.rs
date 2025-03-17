@@ -1,7 +1,9 @@
+use std::io::Result;
+
 use kernel::Shell;
 
 mod kernel;
 
-fn main() {
-    Shell::launch();
+fn main() -> Result<()> {
+    Shell::launch()
 }

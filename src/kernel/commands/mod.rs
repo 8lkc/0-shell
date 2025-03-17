@@ -2,24 +2,33 @@ mod handlers;
 
 use std::io;
 
-use crate::execute;
+use handlers::Echo;
+
+use crate::{
+    command,
+    kernel::commands::handlers::CommandHandler
+};
+// use crate::;
 
 pub(super) struct Command;
 
 impl Command {
-    pub(super) fn check(input: &str) -> io::Result<()> {
+    pub(super) fn check(input: &str) -> Result<(), io::Error> {
         let input: Vec<&str> = input.split_whitespace().collect();
 
-        execute!(input[0], input.iter().skip(1));
-        Ok(())
+        let args: Vec<String> = input.iter().skip(1)
+                                     .map(|str| str.to_string())
+                                     .collect();
+        command!(input[0], &args)
     }
 }
 
 #[macro_export]
-macro_rules! execute {
-    ($command:expr, $args:expr) => {
+macro_rules! command {
+    ($command:expr, $arguments:expr) => {
         match $command {
-            _ => println!("⛔ Command '{}' not found", $command)
+            "echo" => Echo.execute($arguments),
+            _      => Err(std::io::Error::new(std::io::ErrorKind::Other, format!("Command '{}' not found", $command)))
         }
     };
 }

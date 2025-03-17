@@ -15,7 +15,7 @@ impl Shell {
             let mut input = String::new();
             io::stdin()
                 .read_line(&mut input)
-                .expect("⚠️ Failed to read line");
+                .expect("⛔ Failed to read line");
 
             if input.trim() == "exit" {
                 println!();
@@ -23,7 +23,9 @@ impl Shell {
             }
 
             input = input.trim().to_string();
-            if !input.is_empty() { Command::check(&input)?; }
+            if !input.is_empty() {
+                if let Err(err_msg) = Command::check(&input) { println!("⛔ {}", err_msg); }
+            }
         }
     }
 

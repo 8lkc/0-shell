@@ -1,16 +1,22 @@
 mod commands;
+mod dir_stack;
 
 use std::{env, fs::File, io::{self, BufRead, Write}, path};
 
-use commands::Command;
+use {
+    commands::Command,
+    dir_stack::DIRECTORY_STACK
+};
 
 pub struct Shell;
 
 impl Shell {
     pub fn launch() -> io::Result<()> {
+        DIRECTORY_STACK::init();
         Self::show_header()?;
+
         loop {
-            Self::show_prompt();
+            Self::show_prompt()?;
 
             let mut input = String::new();
             io::stdin()
@@ -38,7 +44,7 @@ impl Shell {
         Ok(())
     }
 
-    fn show_prompt() {
+    fn show_prompt() -> Result<(), io::Error> {
         let dir = env!("CARGO_MANIFEST_DIR");
         let dir_path = path::Path::new(dir);
         let home = env::var("HOME").or_else(|_| env::var("USERPROFILE")).ok();
@@ -46,11 +52,12 @@ impl Shell {
         if let Some(home) = home {
             let home_path = path::Path::new(&home);
             if let Ok(relative_path) = dir_path.strip_prefix(home_path) {
-                print!("[~/{}]:~$ ", relative_path.display());
-            } else { print!("[{}]:~$ ", dir); }
-        } else { print!("[{}]:~$ ", dir); }
+                print!("[~/{}]:{}$ ", relative_path.display(), DIRECTORY_STACK::to_string());
+            } else { return Err(io::Error::new(io::ErrorKind::NotFound, "⛔ Prompt not found")) }
+        } else { return Err(io::Error::new(io::ErrorKind::NotFound, "⛔ Prompt not found")) }
 
         // Flush to ensure the prompt is displayed immediately
         io::stdout().flush().expect("⚠️ Failed to flush prompt");
+        Ok(())
     }
 }

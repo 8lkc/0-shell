@@ -2,7 +2,7 @@ mod handlers;
 
 use std::io;
 
-use handlers::Echo;
+use handlers::{Echo, Ls};
 
 use crate::{
     command,
@@ -28,7 +28,8 @@ macro_rules! command {
     ($command:expr, $arguments:expr) => {
         match $command {
             "echo" => Echo.execute($arguments),
-            _      => Err(std::io::Error::new(std::io::ErrorKind::Other, format!("Command '{}' not found", $command)))
+            "ls"   => Ls.execute($arguments),
+            _      => Err(io::Error::new(io::ErrorKind::Other, format!("Command '{}' not found", $command)))
         }
     };
 }

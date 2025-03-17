@@ -42,7 +42,7 @@ impl CommandHandler for Echo {
                         io::stdout().flush().expect("⚠️ Failed to flush prompt");
                         io::stdin()
                             .read_line(&mut input)
-                            .expect("⛔ Failed to read line");
+                            .expect("⚠️ Failed to read line");
                     }
                 }
             }

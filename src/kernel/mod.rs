@@ -1,4 +1,8 @@
+mod commands;
+
 use std::{env, io::{self, Write}, path};
+
+use commands::Command;
 
 pub struct Shell;
 
@@ -13,12 +17,12 @@ impl Shell {
                 .expect("⚠️ Failed to read line");
 
             if input.trim() == "exit" {
-                println!();
                 break;
             }
 
-            if !input.trim().is_empty() {
-                println!("Command '{}' not found", input.trim());
+            input = input.trim().to_string();
+            if !input.is_empty() {
+                Command::check(&input);
             }
         }
     }

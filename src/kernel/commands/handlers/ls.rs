@@ -57,7 +57,9 @@ impl Ls {
     fn listing<P: AsRef<Path>>(path: P, all: bool) -> Result<(), io::Error> {
         let items = Self::get_content(path, all)?;
 
+        if all { print!(" .   .."); }
         if !items.is_empty() {
+            if all { print!("   "); }
             print!("{}", items.first().unwrap().name);
             for item in items.iter().skip(1) {
                 print!("   {}", item.name);

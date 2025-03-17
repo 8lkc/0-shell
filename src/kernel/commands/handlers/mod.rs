@@ -2,10 +2,12 @@ use std::io;
 
 mod echo;
 mod ls;
+mod pwd;
 
 pub(super) use {
     echo::Echo,
-    ls::Ls
+    ls::Ls,
+    pwd::Pwd
 };
 
 pub trait CommandHandler {

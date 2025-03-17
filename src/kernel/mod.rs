@@ -32,7 +32,7 @@ impl Shell {
         let file = File::open("assets/header.txt")?;
         let reader = io::BufReader::new(file);
         for line in reader.lines() { println!("{}", line?) }
-        println!("\n🔥 Type 'exit' to quit the shell\n");
+        println!("\n🔥 Type 'exit' to quit the shell 😇\n");
         Ok(())
     }
 

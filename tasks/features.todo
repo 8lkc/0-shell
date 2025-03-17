@@ -1,0 +1,24 @@
+____________________________________________________________________________________________________
+=== INSTRUCTIONS ===
+    ☐ Program a mini `Unix shell`
+    ✔ This interpreter must display at least a simple `$` and wait until you type a command line which will be validated by pressing enter @done(25-03-15 10:27 PM)
+    ✔ The `$` will be shown again only once the command has been completely executed @done(25-03-15 10:27 PM)
+    ☐ The command lines are simple, you will not have pipes, redirection or any other advanced functions
+    ☐ Manage the errors, by displaying a message adapted to the error output. @started(25-03-16 03:34 PM)
+    ☐ Implement the expected commands (specified in file `commands.todo` at the section `=== EXPECTED ===`)
+    ☐ Manage the program interruption `Ctrl + D`
+    ☐ Writte the project in a compiled language (like C, Rust, Go or other) @started(25-03-15 09:04 PM)
+    ☐ The code must respect the `good practices`
+____________________________________________________________________________________________________
+=== BONUS ===
+    ☐ Implement the commands exclusively using `low-level system calls` avoiding built-in functions or libraries that abstract file operations
+        Avoid High-Level Abstractions: Instead of using functions like the Go (for example) `os.Open`, `os.Remove`, and `io.Copy`,
+        you would use system calls directly through the `syscall package` using `syscall.Open`, `syscall.Close`, `syscall.Read`, `syscall.Write`, `syscall.Unlink`.
+    ☐ Manage the interruption `Ctrl + C`
+    ☐ Auto complete when you are writing
+    ☐ Add piping
+    ☐ Add redirection
+    ✔ Have your path behind the `$` like (for example, `~/Desktop/0-shell $`) @done(25-03-15 10:27 PM)
+    ☐ Add colors for the directories or errors
+    Other advanced commands we may like:
+        ☐ Add colors to the shell promt

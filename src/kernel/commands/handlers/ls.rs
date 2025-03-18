@@ -1,5 +1,9 @@
 use {
-    super::CommandHandler, crate::{kernel::DIRECTORY_STACK, rgb_to_ansi256}, std::{fs::{self}, io, path::Path}
+    super::CommandHandler,
+    crate::{kernel::DIRECTORY_STACK, push_to_history, rgb_to_ansi256},
+    std::{fs::{self},
+    io,
+    path::Path}
 };
 
 pub struct List;
@@ -37,7 +41,7 @@ impl CommandHandler for List {
             }
         }
 
-        List::listing(path, all)
+        List::listing(path, all, args)
     }
 }
 
@@ -69,7 +73,7 @@ impl List {
         Ok(items)
     }
 
-    fn listing<P: AsRef<Path>>(path: P, all: bool) -> Result<(), io::Error> {
+    fn listing<P: AsRef<Path>>(path: P, all: bool, args: &[String]) -> Result<(), io::Error> {
         let items = Self::get_content(path, all)?;
 
         if all { print!(" .   .."); }
@@ -82,6 +86,7 @@ impl List {
             println!();
         }
 
+        push_to_history(&format!("ls {}", args.join(" ")))?;
         Ok(())
     }
 }

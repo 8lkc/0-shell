@@ -1,11 +1,7 @@
 use {
-    std::io,
-
-    crate::{
-        kernel::DIRECTORY_STACK,
-        rgb_to_ansi256
-    },
-    super::CommandHandler
+    super::CommandHandler, crate::{
+        kernel::DIRECTORY_STACK, push_to_history, rgb_to_ansi256
+    }, std::io
 };
 
 pub struct PrintWorkingDirectory;
@@ -14,6 +10,7 @@ impl CommandHandler for PrintWorkingDirectory {
     fn execute(args: &[String]) -> Result<(), std::io::Error> {
         if args.is_empty() {
             println!("/01-shell{}", DIRECTORY_STACK::to_string().chars().skip(1).collect::<String>());
+            push_to_history("pwd")?;
             return Ok(());
         }
         Err(io::Error::new(

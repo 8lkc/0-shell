@@ -1,0 +1,3 @@
+echo test
+ls -a
+ls -a a-dir

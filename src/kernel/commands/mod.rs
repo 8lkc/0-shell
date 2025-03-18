@@ -1,18 +1,18 @@
 mod handlers;
 
 use {
-    std::io,
-
-    handlers::{
-        ChangeDirectory,
-        Echo,
-        List,
-        PrintWorkingDirectory
-    },
     crate::{
         command,
         kernel::commands::handlers::CommandHandler
-    }
+    },
+    handlers::{
+        ChangeDirectory,
+        Echo,
+        History,
+        List,
+        PrintWorkingDirectory
+    },
+    std::io
 };
 
 pub(super) struct Command;
@@ -32,11 +32,12 @@ impl Command {
 macro_rules! command {
     ($command:expr, $arguments:expr) => {
         match $command {
-            "echo" => Echo::execute($arguments),
-            "ls"   => List::execute($arguments),
-            "pwd"  => PrintWorkingDirectory::execute($arguments),
-            "cd"   => ChangeDirectory::execute($arguments),
-            _      => Err(io::Error::new(io::ErrorKind::Other, format!("Command '{}' not found", $command)))
+            "echo"     => Echo::execute($arguments),
+            "ls"       => List::execute($arguments),
+            "pwd"      => PrintWorkingDirectory::execute($arguments),
+            "cd"       => ChangeDirectory::execute($arguments),
+            "history"  => History::execute($arguments),
+            _ => Err(io::Error::new(io::ErrorKind::Other, format!("Command '{}' not found", $command)))
         }
     };
 }

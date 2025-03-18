@@ -1,8 +1,7 @@
 use {
     super::CommandHandler,
     crate::{
-        kernel::DIRECTORY_STACK,
-        rgb_to_ansi256
+        kernel::DIRECTORY_STACK, push_to_history, rgb_to_ansi256
     },
     std::{fs, io}
 };
@@ -11,6 +10,17 @@ pub struct ChangeDirectory;
 
 impl CommandHandler for ChangeDirectory {
     fn execute(args: &[String]) -> Result<(), std::io::Error> {
+        if args.is_empty() {
+            DIRECTORY_STACK::set_from_vec(vec!["~".to_string()]);
+            push_to_history("cd")?;
+            return Ok(());
+        } else if args.len() > 1 {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput, 
+                format!("\x1b[1;3mcd:\x1b[0m \x1b[38;5;{}mtoo many arguments\x1b[0m", rgb_to_ansi256(220, 45, 34))
+            ));
+        }
+
         let mut current_path = DIRECTORY_STACK::to_string();
         let mut current_stack = DIRECTORY_STACK::get_copy();
         let arg_parts = args[0].split("/").collect::<Vec<&str>>();
@@ -41,6 +51,7 @@ impl CommandHandler for ChangeDirectory {
         }
 
         DIRECTORY_STACK::set_from_vec(current_stack);
+        push_to_history(&format!("cd {}", args[0]))?;
         Ok(())
     }
 }

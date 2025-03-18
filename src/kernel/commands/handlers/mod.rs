@@ -6,6 +6,7 @@ mod pwd;
 mod cd;
 
 pub(super) use {
+    cd::ChangeDirectory,
     echo::Echo,
     ls::List,
     pwd::PrintWorkingDirectory

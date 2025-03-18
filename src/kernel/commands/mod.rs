@@ -4,6 +4,7 @@ use {
     std::io,
 
     handlers::{
+        ChangeDirectory,
         Echo,
         List,
         PrintWorkingDirectory
@@ -34,6 +35,7 @@ macro_rules! command {
             "echo" => Echo::execute($arguments),
             "ls"   => List::execute($arguments),
             "pwd"  => PrintWorkingDirectory::execute($arguments),
+            "cd"   => ChangeDirectory::execute($arguments),
             _      => Err(io::Error::new(io::ErrorKind::Other, format!("Command '{}' not found", $command)))
         }
     };

@@ -1,7 +1,6 @@
 use {
-    std::sync::Mutex,
-
-    lazy_static::lazy_static
+    lazy_static::lazy_static,
+    std::sync::Mutex
 };
 
 lazy_static! {
@@ -14,6 +13,14 @@ pub(super) struct DIRECTORY_STACK;
 impl DIRECTORY_STACK {
     pub(super) fn init() {
         DIR_STACK.lock().unwrap().push("~".to_string());
+    }
+
+    pub(super) fn get_copy() -> Vec<String> {
+        DIR_STACK.lock().unwrap().clone()
+    }
+
+    pub(super) fn set_from_vec(vec: Vec<String>) {
+        *DIR_STACK.lock().unwrap() = vec;
     }
 
     // pub(super) fn pop() -> Option<String> {

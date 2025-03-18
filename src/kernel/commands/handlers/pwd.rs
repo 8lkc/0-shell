@@ -1,8 +1,12 @@
-use std::io;
+use {
+    std::io,
 
-use crate::kernel::DIRECTORY_STACK;
-
-use super::CommandHandler;
+    crate::{
+        kernel::DIRECTORY_STACK,
+        rgb_to_ansi256
+    },
+    super::CommandHandler
+};
 
 pub struct PrintWorkingDirectory;
 
@@ -12,6 +16,9 @@ impl CommandHandler for PrintWorkingDirectory {
             println!("/01-shell{}", DIRECTORY_STACK::to_string().chars().skip(1).collect::<String>());
             return Ok(());
         }
-        Err(io::Error::new(io::ErrorKind::InvalidInput, "pwd: too many arguments"))
+        Err(io::Error::new(
+            io::ErrorKind::InvalidInput, 
+            format!("\x1b[1;3mpwd:\x1b[0m \x1b[38;5;{}mtoo many arguments\x1b[0m", rgb_to_ansi256(220, 45, 34))
+        ))
     }
 }

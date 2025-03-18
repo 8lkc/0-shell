@@ -1,14 +1,18 @@
 mod handlers;
 
-use std::io;
+use {
+    std::io,
 
-use handlers::{Echo, List, PrintWorkingDirectory};
-
-use crate::{
-    command,
-    kernel::commands::handlers::CommandHandler
+    handlers::{
+        Echo,
+        List,
+        PrintWorkingDirectory
+    },
+    crate::{
+        command,
+        kernel::commands::handlers::CommandHandler
+    }
 };
-// use crate::;
 
 pub(super) struct Command;
 

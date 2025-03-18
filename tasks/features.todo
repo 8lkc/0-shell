@@ -19,7 +19,7 @@ ________________________________________________________________________________
     ☐ Add piping
     ☐ Add redirection
     ✔ Have your path behind the `$` like (for example, `~/Desktop/0-shell $`) @done(25-03-15 10:27 PM)
-    ☐ Add colors for the directories or errors
+    ✔ Add colors for the directories or errors @done(25-03-18 01:53 PM)
     Other advanced commands we may like:
-        ☐ Add colors to the shell promt
+        ✔ Add colors to the shell promt @done(25-03-18 01:23 PM)
         ✔ Add startup (welcome) message @started(25-03-17 01:38 PM) @done(25-03-17 02:11 PM) @lasted(33m57s)

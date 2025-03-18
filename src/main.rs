@@ -1,8 +1,8 @@
-use std::io::Result;
+use {
+    std::io::Result,
 
-use kernel::Shell;
-
-mod kernel;
+    shell::Shell
+};
 
 fn main() -> Result<()> {
     Shell::launch()

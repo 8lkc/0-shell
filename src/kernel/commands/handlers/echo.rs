@@ -1,6 +1,8 @@
-use std::io::{self, Write};
+use {
+    std::io::{self, Write},
 
-use super::CommandHandler;
+    super::CommandHandler
+};
 
 pub struct Echo;
 
@@ -38,7 +40,7 @@ impl CommandHandler for Echo {
                 if miss_closed_quote {
                     while input.trim() != opened_quote {
                         input.clear();
-                        print!("{}quote> ", if opened_quote == "'" { "" } else { "d" });
+                        print!("\x1b[3m{}quote>\x1b[0m ", if opened_quote == "'" { "" } else { "d" });
                         io::stdout().flush().expect("⚠️ Failed to flush prompt");
                         io::stdin()
                             .read_line(&mut input)

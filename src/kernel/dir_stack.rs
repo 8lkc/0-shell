@@ -1,6 +1,8 @@
-use std::sync::Mutex;
+use {
+    std::sync::Mutex,
 
-use lazy_static::lazy_static;
+    lazy_static::lazy_static
+};
 
 lazy_static! {
     pub static ref DIR_STACK: Mutex<Vec<String>> = Mutex::new(Vec::new());

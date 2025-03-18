@@ -25,3 +25,8 @@ ls
 ls new-dir
 ls -a new-dir
 exit
+exit
+touch file.log
+ls 
+exit
+exit

@@ -12,7 +12,8 @@ use {
         History,
         List,
         MakeDirectory,
-        PrintWorkingDirectory
+        PrintWorkingDirectory,
+        Touch
     },
     std::io
 };
@@ -40,6 +41,7 @@ macro_rules! command {
             "cd"       => ChangeDirectory::execute($arguments),
             "history"  => History::execute($arguments),
             "mkdir"    => MakeDirectory::execute($arguments),
+            "touch"    => Touch::execute($arguments),
             _ => Err(io::Error::new(
                 io::ErrorKind::Other, format!("Command '\x1b[1;3;38;5;{}m{}\x1b[0m' not found", rgb_to_ansi256(220, 45, 34), $command)
             ))

@@ -3,13 +3,15 @@ mod handlers;
 use {
     crate::{
         command,
-        kernel::commands::handlers::CommandHandler
+        kernel::commands::handlers::CommandHandler,
+        rgb_to_ansi256
     },
     handlers::{
         ChangeDirectory,
         Echo,
         History,
         List,
+        MakeDirectory,
         PrintWorkingDirectory
     },
     std::io
@@ -37,7 +39,10 @@ macro_rules! command {
             "pwd"      => PrintWorkingDirectory::execute($arguments),
             "cd"       => ChangeDirectory::execute($arguments),
             "history"  => History::execute($arguments),
-            _ => Err(io::Error::new(io::ErrorKind::Other, format!("Command '{}' not found", $command)))
+            "mkdir"    => MakeDirectory::execute($arguments),
+            _ => Err(io::Error::new(
+                io::ErrorKind::Other, format!("Command '\x1b[1;3;38;5;{}m{}\x1b[0m' not found", rgb_to_ansi256(220, 45, 34), $command)
+            ))
         }
     };
 }

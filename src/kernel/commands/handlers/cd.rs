@@ -57,7 +57,7 @@ impl CommandHandler for ChangeDirectory {
 }
 
 impl ChangeDirectory {
-    fn is_subdir(parent: &str, child: &str) -> bool {
+    pub fn is_subdir(parent: &str, child: &str) -> bool {
         let content = fs::read_dir(parent).unwrap();
         for entry in content {
             let entry = entry.unwrap();

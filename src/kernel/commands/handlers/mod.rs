@@ -11,5 +11,5 @@ pub(super) use {
 };
 
 pub trait CommandHandler {
-    fn execute(&self, args: &[String]) -> Result<(), io::Error>;
+    fn execute(args: &[String]) -> Result<(), io::Error>;
 }

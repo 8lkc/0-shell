@@ -5,7 +5,7 @@ use super::CommandHandler;
 pub struct Echo;
 
 impl CommandHandler for Echo {
-    fn execute(&self, args: &[String]) -> Result<(), std::io::Error> {
+    fn execute(args: &[String]) -> Result<(), std::io::Error> {
         let mut args = args.to_vec();
         let mut opened_quote = String::new();
 

@@ -7,7 +7,7 @@ use super::CommandHandler;
 pub struct Ls;
 
 impl CommandHandler for Ls {
-    fn execute(&self, args: &[String]) -> Result<(), std::io::Error> {
+    fn execute(args: &[String]) -> Result<(), std::io::Error> {
         let mut all = false;
         let mut path = DIRECTORY_STACK::to_string();
 

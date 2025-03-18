@@ -27,9 +27,9 @@ impl Command {
 macro_rules! command {
     ($command:expr, $arguments:expr) => {
         match $command {
-            "echo" => Echo.execute($arguments),
-            "ls"   => Ls.execute($arguments),
-            "pwd"  => Pwd.execute($arguments),
+            "echo" => Echo::execute($arguments),
+            "ls"   => Ls::execute($arguments),
+            "pwd"  => Pwd::execute($arguments),
             _      => Err(io::Error::new(io::ErrorKind::Other, format!("Command '{}' not found", $command)))
         }
     };

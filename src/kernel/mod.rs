@@ -2,16 +2,12 @@ mod commands;
 mod dir_stack;
 
 use {
-    std::{
+    crate::{push_to_history, rgb_to_ansi256}, commands::Command, dir_stack::DIRECTORY_STACK, std::{
         env,
         fs::File,
         io::{self, BufRead, Write},
         path
-    },
-
-    crate::rgb_to_ansi256,
-    commands::Command,
-    dir_stack::DIRECTORY_STACK
+    }
 };
 
 pub struct Shell;
@@ -31,6 +27,7 @@ impl Shell {
 
             if input.trim() == "exit" {
                 println!();
+                push_to_history("exit")?;
                 return Ok(());
             }
 

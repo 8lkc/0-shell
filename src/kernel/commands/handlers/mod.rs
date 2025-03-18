@@ -6,8 +6,8 @@ mod pwd;
 
 pub(super) use {
     echo::Echo,
-    ls::Ls,
-    pwd::Pwd
+    ls::List,
+    pwd::PrintWorkingDirectory
 };
 
 pub trait CommandHandler {

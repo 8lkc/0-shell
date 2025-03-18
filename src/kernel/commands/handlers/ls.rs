@@ -4,9 +4,9 @@ use crate::kernel::DIRECTORY_STACK;
 
 use super::CommandHandler;
 
-pub struct Ls;
+pub struct List;
 
-impl CommandHandler for Ls {
+impl CommandHandler for List {
     fn execute(args: &[String]) -> Result<(), std::io::Error> {
         let mut all = false;
         let mut path = DIRECTORY_STACK::to_string();
@@ -33,11 +33,11 @@ impl CommandHandler for Ls {
             }
         }
 
-        Ls::listing(path, all)
+        List::listing(path, all)
     }
 }
 
-impl Ls {
+impl List {
     fn get_content<P: AsRef<Path>>(path: P, all: bool) -> Result<Vec<Item>, io::Error> {
         let mut items = Vec::new();
         let content = fs::read_dir(path)?;

@@ -4,9 +4,9 @@ use crate::kernel::DIRECTORY_STACK;
 
 use super::CommandHandler;
 
-pub struct Pwd;
+pub struct PrintWorkingDirectory;
 
-impl CommandHandler for Pwd {
+impl CommandHandler for PrintWorkingDirectory {
     fn execute(args: &[String]) -> Result<(), std::io::Error> {
         if args.is_empty() {
             println!("/01-shell{}", DIRECTORY_STACK::to_string().chars().skip(1).collect::<String>());

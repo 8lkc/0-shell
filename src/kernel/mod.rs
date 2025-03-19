@@ -2,7 +2,13 @@ mod commands;
 mod dir_stack;
 
 use {
-    crate::{push_to_history, rgb_to_ansi256}, commands::Command, dir_stack::DIRECTORY_STACK, std::{
+    crate::{
+        push_to_history,
+        rgb_to_ansi256
+    },
+    commands::Command,
+    dir_stack::DIRECTORY_STACK,
+    std::{
         env,
         fs::File,
         io::{self, BufRead, Write},
@@ -16,13 +22,6 @@ impl Shell {
     pub fn launch() -> io::Result<()> {
         DIRECTORY_STACK::init();
         Self::show_header()?;
-
-        // let running = Arc::new(AtomicBool::new(true));
-        // let r = running.clone();
-
-        // ctrlc::set_handler(move || {
-        //     r.store(false, Ordering::SeqCst);
-        // }).expect("Error setting Ctrl-C handler");
 
         loop {
             Self::show_prompt()?;
@@ -43,11 +42,6 @@ impl Shell {
                 if let Err(err_msg) = Command::check(&input) { println!("⛔ {}", err_msg); }
             }
         }
-        // while running.load(Ordering::SeqCst) {
-        // }
-
-        // println!("\nReceived Ctrl+C, exiting...");
-        // Ok(())
     }
 
     fn show_header() -> io::Result<()> {

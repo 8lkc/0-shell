@@ -1,5 +1,3 @@
-use std::io;
-
 mod echo;
 mod ls;
 mod pwd;
@@ -21,6 +19,7 @@ pub use {
     cd::ChangeDirectory,
     mkdir::MakeDirectory
 };
+use std::io;
 
 pub trait CommandHandler {
     fn execute(args: &[String]) -> Result<(), io::Error>;

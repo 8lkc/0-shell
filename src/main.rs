@@ -1,7 +1,6 @@
 use {
-    std::io::Result,
-
-    shell::Shell
+    shell::Shell,
+    std::io::Result
 };
 
 fn main() -> Result<()> {

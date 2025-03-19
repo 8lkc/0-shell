@@ -1,9 +1,14 @@
 use {
     super::CommandHandler,
-    crate::{kernel::DIRECTORY_STACK, push_to_history, rgb_to_ansi256},
-    std::{fs::{self},
-    io,
-    path::Path}
+    crate::{
+        kernel::DIRECTORY_STACK,
+        Util
+    },
+    std::{
+        fs::{self},
+        io,
+        path::Path
+    }
 };
 
 pub struct List;
@@ -22,7 +27,7 @@ impl CommandHandler for List {
                             io::ErrorKind::InvalidInput,
                             format!(
                                 "\x1b[1;3mls:\x1b[0m unexpected argument '\x1b[1;3;38;5;{}m-{}\x1b[0m' found",
-                                rgb_to_ansi256(251, 177, 60) , ch
+                                Util::rgb_to_ansi256(251, 177, 60) , ch
                             )
                         ))
                     }
@@ -33,7 +38,7 @@ impl CommandHandler for List {
                         io::ErrorKind::InvalidInput,
                         format!(
                             "\x1b[1;3mls:\x1b[0m cannot access '\x1b[1;38;5;{}m{}\x1b[0m': \x1b[38;5;{}mNo such file or directory\x1b[0m",
-                            rgb_to_ansi256(251, 177, 60), arg, rgb_to_ansi256(220, 45, 34)
+                            Util::rgb_to_ansi256(251, 177, 60), arg, Util::rgb_to_ansi256(220, 45, 34)
                         )
                     ));
                 }
@@ -55,7 +60,7 @@ impl List {
                     io::ErrorKind::NotFound,
                     format!(
                         "\x1b[1;3mls:\x1b[0m cannot access '\x1b[1;38;5;{}m{}\x1b[0m': \x1b[38;5;{}mNo such file or directory\x1b[0m",
-                        rgb_to_ansi256(251, 177, 60), path.as_ref().display(), rgb_to_ansi256(220, 45, 34)
+                        Util::rgb_to_ansi256(251, 177, 60), path.as_ref().display(), Util::rgb_to_ansi256(220, 45, 34)
                     )
                 ));
             }
@@ -86,7 +91,7 @@ impl List {
             println!();
         }
 
-        push_to_history(&format!("ls {}", args.join(" ")))?;
+        Util::push_to_history(&format!("ls {}", args.join(" ")))?;
         Ok(())
     }
 }

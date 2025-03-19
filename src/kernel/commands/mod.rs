@@ -4,7 +4,7 @@ use {
     crate::{
         command,
         kernel::commands::handlers::CommandHandler,
-        rgb_to_ansi256
+        Util
     },
     handlers::{
         Concatenate,
@@ -45,7 +45,7 @@ macro_rules! command {
             "touch"    => Touch::execute($arguments),
             "cat"      => Concatenate::execute($arguments),
             _ => Err(io::Error::new(
-                io::ErrorKind::Other, format!("Command '\x1b[1;3;38;5;{}m{}\x1b[0m' not found", rgb_to_ansi256(220, 45, 34), $command)
+                io::ErrorKind::Other, format!("Command '\x1b[1;3;38;5;{}m{}\x1b[0m' not found", Util::rgb_to_ansi256(220, 45, 34), $command)
             ))
         }
     };

@@ -1,5 +1,10 @@
 use {
-    super::CommandHandler, crate::rgb_to_ansi256, std::{fs::File, io::{self, BufRead}}
+    super::CommandHandler,
+    crate::Util,
+    std::{
+        fs::File,
+        io::{self, BufRead}
+    }
 };
 
 pub struct History;
@@ -31,7 +36,7 @@ impl CommandHandler for History {
 
         Err(io::Error::new(
             io::ErrorKind::InvalidInput, 
-            format!("\x1b[1;3mhistory:\x1b[0m \x1b[38;5;{}mtoo many arguments\x1b[0m", rgb_to_ansi256(220, 45, 34))
+            format!("\x1b[1;3mhistory:\x1b[0m \x1b[38;5;{}mtoo many arguments\x1b[0m", Util::rgb_to_ansi256(220, 45, 34))
         ))
     }
 }

@@ -2,10 +2,7 @@ mod commands;
 mod dir_stack;
 
 use {
-    crate::{
-        push_to_history,
-        rgb_to_ansi256
-    },
+    crate::Util,
     commands::Command,
     dir_stack::DIRECTORY_STACK,
     std::{
@@ -33,7 +30,7 @@ impl Shell {
     
             if input.trim() == "exit" {
                 println!();
-                push_to_history("exit")?;
+                Util::push_to_history("exit")?;
                 return Ok(());
             }
     
@@ -49,9 +46,9 @@ impl Shell {
         let file = File::open("assets/header.txt")?;
         let reader = io::BufReader::new(file);
         for line in reader.lines() {
-            println!("\x1b[1;38;5;{}m{}\x1b[0m", rgb_to_ansi256(253, 240, 213), line?)
+            println!("\x1b[1;38;5;{}m{}\x1b[0m", Util::rgb_to_ansi256(253, 240, 213), line?)
         }
-        println!("\n🔥 Type '\x1b[1;3;38;5;{}mexit\x1b[0m' to quit the shell 😇\n", rgb_to_ansi256(46, 196, 182));
+        println!("\n🔥 Type '\x1b[1;3;38;5;{}mexit\x1b[0m' to quit the shell 😇\n", Util::rgb_to_ansi256(46, 196, 182));
         Ok(())
     }
 
@@ -65,12 +62,12 @@ impl Shell {
             if let Ok(relative_path) = dir_path.strip_prefix(home_path) {
                 print!(
                     "\x1b[1;38;5;{}m[~/{}]\x1b[38;5;{}m:\x1b[38;5;{}m{}\x1b[38;5;{}m$\x1b[0m ",
-                    rgb_to_ansi256(143, 217, 73),
+                    Util::rgb_to_ansi256(143, 217, 73),
                     relative_path.display(),
-                    rgb_to_ansi256(253, 254, 250),
-                    rgb_to_ansi256(109, 156, 192),
+                    Util::rgb_to_ansi256(253, 254, 250),
+                    Util::rgb_to_ansi256(109, 156, 192),
                     DIRECTORY_STACK::to_string(),
-                    rgb_to_ansi256(253, 254, 250)
+                    Util::rgb_to_ansi256(253, 254, 250)
                 );
             } else { return Err(io::Error::new(io::ErrorKind::NotFound, "⛔ Prompt not found")) }
         } else { return Err(io::Error::new(io::ErrorKind::NotFound, "⛔ Prompt not found")) }

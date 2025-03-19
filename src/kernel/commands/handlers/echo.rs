@@ -1,5 +1,7 @@
 use {
-    super::CommandHandler, crate::push_to_history, std::io::{self, Write}
+    super::CommandHandler,
+    crate::Util,
+    std::io::{self, Write}
 };
 
 pub struct Echo;
@@ -50,7 +52,7 @@ impl CommandHandler for Echo {
 
         let output = args.join(" ");
         println!("{}", output);
-        push_to_history(&format!("echo {}", output))?;
+        Util::push_to_history(&format!("echo {}", output))?;
         Ok(())
     }
 }

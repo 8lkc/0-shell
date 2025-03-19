@@ -1,5 +1,13 @@
 use {
-    super::{ChangeDirectory, CommandHandler}, crate::{kernel::DIRECTORY_STACK, push_to_history, rgb_to_ansi256}, std::{fs, io}
+    super::{
+        ChangeDirectory,
+        CommandHandler
+    },
+    crate::{
+        kernel::DIRECTORY_STACK,
+        Util
+    },
+    std::{fs, io}
 };
 
 pub struct MakeDirectory;
@@ -15,19 +23,19 @@ impl CommandHandler for MakeDirectory {
                         io::ErrorKind::InvalidInput, 
                         format!(
                             "\x1b[1;3mmkdir:\x1b[0m cannot create directory '\x1b[1;38;5;{}m{}\x1b[0m': \x1b[38;5;{}mFile exists\x1b[0m",
-                            rgb_to_ansi256(251, 177, 60), arg, rgb_to_ansi256(220, 45, 34)
+                            Util::rgb_to_ansi256(251, 177, 60), arg, Util::rgb_to_ansi256(220, 45, 34)
                         )
                     ));
                 }
             }
 
-            push_to_history(&format!("mkdir {}", args.join(" ")))?;
+            Util::push_to_history(&format!("mkdir {}", args.join(" ")))?;
             return Ok(());
         }
 
         Err(io::Error::new(
             io::ErrorKind::InvalidInput, 
-            format!("\x1b[1;3mmkdir:\x1b[0m \x1b[38;5;{}mmissing operand\x1b[0m", rgb_to_ansi256(220, 45, 34))
+            format!("\x1b[1;3mmkdir:\x1b[0m \x1b[38;5;{}mmissing operand\x1b[0m", Util::rgb_to_ansi256(220, 45, 34))
         ))
     }
 }
@@ -41,7 +49,7 @@ impl MakeDirectory {
                     io::ErrorKind::InvalidInput, 
                     format!(
                         "\x1b[1;3m{}:\x1b[0m cannot create directory '\x1b[1;38;5;{}m{}\x1b[0m': \x1b[38;5;{}mNo such file or directory\x1b[0m",
-                        command, rgb_to_ansi256(251, 177, 60), argument, rgb_to_ansi256(220, 45, 34)
+                        command, Util::rgb_to_ansi256(251, 177, 60), argument, Util::rgb_to_ansi256(220, 45, 34)
                     )
                 ));
             }

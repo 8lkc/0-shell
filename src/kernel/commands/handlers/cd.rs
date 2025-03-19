@@ -1,7 +1,7 @@
 use {
     super::CommandHandler,
     crate::{
-        kernel::DIRECTORY_STACK, push_to_history, rgb_to_ansi256
+        kernel::DIRECTORY_STACK, Util,
     },
     std::{fs, io}
 };
@@ -12,12 +12,12 @@ impl CommandHandler for ChangeDirectory {
     fn execute(args: &[String]) -> Result<(), std::io::Error> {
         if args.is_empty() {
             DIRECTORY_STACK::set_from_vec(vec!["~".to_string()]);
-            push_to_history("cd")?;
+            Util::push_to_history("cd")?;
             return Ok(());
         } else if args.len() > 1 {
             return Err(io::Error::new(
                 io::ErrorKind::InvalidInput, 
-                format!("\x1b[1;3mcd:\x1b[0m \x1b[38;5;{}mtoo many arguments\x1b[0m", rgb_to_ansi256(220, 45, 34))
+                format!("\x1b[1;3mcd:\x1b[0m \x1b[38;5;{}mtoo many arguments\x1b[0m", Util::rgb_to_ansi256(220, 45, 34))
             ));
         }
 
@@ -42,7 +42,7 @@ impl CommandHandler for ChangeDirectory {
                             io::ErrorKind::Other,
                             format!(
                                 "\x1b[1;3mcd:\x1b[0m \x1b[38;5;{}mno such directory:\x1b[0m \x1b[1;38;5;{}m{}\x1b[0m",
-                                rgb_to_ansi256(220, 45, 34), rgb_to_ansi256(251, 177, 60), part
+                                Util::rgb_to_ansi256(220, 45, 34), Util::rgb_to_ansi256(251, 177, 60), part
                             )
                         ));
                     }
@@ -51,7 +51,7 @@ impl CommandHandler for ChangeDirectory {
         }
 
         DIRECTORY_STACK::set_from_vec(current_stack);
-        push_to_history(&format!("cd {}", args[0]))?;
+        Util::push_to_history(&format!("cd {}", args[0]))?;
         Ok(())
     }
 }

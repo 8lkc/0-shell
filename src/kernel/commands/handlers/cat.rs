@@ -1,6 +1,19 @@
-use std::{io::{self, Write}, sync::{atomic::{AtomicBool, Ordering}, Arc}};
-
-use termion::{input::TermRead, raw::IntoRawMode};
+use {
+    std::{
+        io::{self, Write},
+        sync::{
+            atomic::{
+                AtomicBool,
+                Ordering
+            },
+            Arc
+        }
+    },
+    termion::{
+        input::TermRead,
+        raw::IntoRawMode
+    }
+};
 
 use super::CommandHandler;
 

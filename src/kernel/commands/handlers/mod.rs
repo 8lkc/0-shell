@@ -7,8 +7,10 @@ mod cd;
 mod history;
 mod mkdir;
 mod touch;
+mod cat;
 
 pub(super) use {
+    cat::Concatenate,
     echo::Echo,
     history::History,
     ls::List,

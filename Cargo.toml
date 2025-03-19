@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 ctrlc = "3.2"
 lazy_static = "1.4.0"
+termion = "1.5.6"

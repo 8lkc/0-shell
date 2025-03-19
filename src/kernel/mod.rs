@@ -6,7 +6,7 @@ use {
         env,
         fs::File,
         io::{self, BufRead, Write},
-        path
+        path, sync::{atomic::{AtomicBool, Ordering}, Arc}
     }
 };
 
@@ -17,25 +17,36 @@ impl Shell {
         DIRECTORY_STACK::init();
         Self::show_header()?;
 
-        loop {
-            Self::show_prompt()?;
+        let running = Arc::new(AtomicBool::new(true));
+        let r = running.clone();
 
+        ctrlc::set_handler(move || {
+            r.store(false, Ordering::SeqCst);
+        }).expect("Error setting Ctrl-C handler");
+
+        // loop {}
+        while running.load(Ordering::SeqCst) {
+            Self::show_prompt()?;
+    
             let mut input = String::new();
             io::stdin()
                 .read_line(&mut input)
                 .expect("⛔ Failed to read line");
-
+    
             if input.trim() == "exit" {
                 println!();
                 push_to_history("exit")?;
                 return Ok(());
             }
-
+    
             input = input.trim().to_string();
             if !input.is_empty() {
                 if let Err(err_msg) = Command::check(&input) { println!("⛔ {}", err_msg); }
             }
         }
+
+        println!("\nReceived Ctrl+C, exiting...");
+        Ok(())
     }
 
     fn show_header() -> io::Result<()> {

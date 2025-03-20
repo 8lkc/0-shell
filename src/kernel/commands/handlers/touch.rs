@@ -5,7 +5,8 @@ use {
     },
     crate::{
         kernel::DIRECTORY_STACK,
-        Util
+        Error,
+        Tool
     },
     std::{
         fs::File,
@@ -22,23 +23,14 @@ impl CommandHandler for Touch {
                 MakeDirectory::check_nesting("touch", &arg)?;
 
                 if File::create(format!("{}/{}", DIRECTORY_STACK::to_string(), arg)).is_err() {
-                    return Err(io::Error::new(
-                        io::ErrorKind::InvalidInput, 
-                        format!(
-                            "\x1b[1;3mtouch:\x1b[0m cannot create directory '\x1b[1;38;5;{}m{}\x1b[0m': \x1b[38;5;{}mFile exists\x1b[0m",
-                            Util::rgb_to_ansi256(251, 177, 60), arg, Util::rgb_to_ansi256(220, 45, 34)
-                        )
-                    ));
+                    return Err(Error::throw(io::ErrorKind::HostUnreachable, &["touch:", arg]));
                 }
             }
 
-            Util::push_to_history(&format!("touch {}", args.join(" ")))?;
+            Tool::push_to_history(&format!("touch {}", args.join(" ")))?;
             return Ok(());
         }
 
-        Err(io::Error::new(
-            io::ErrorKind::InvalidInput, 
-            format!("\x1b[1;3mtouch:\x1b[0m \x1b[38;5;{}mmissing operand\x1b[0m", Util::rgb_to_ansi256(220, 45, 34))
-        ))
+        Err(Error::throw(io::ErrorKind::NotSeekable, &["touch:"]))
     }
 }

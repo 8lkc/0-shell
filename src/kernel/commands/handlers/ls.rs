@@ -2,7 +2,8 @@ use {
     super::CommandHandler,
     crate::{
         kernel::DIRECTORY_STACK,
-        Util
+        Error,
+        Tool
     },
     std::{
         fs::{self},
@@ -23,24 +24,12 @@ impl CommandHandler for List {
                 for ch in arg.chars().skip(1) {
                     match ch {
                         'a' => all = true,
-                        _   => return Err(io::Error::new(
-                            io::ErrorKind::InvalidInput,
-                            format!(
-                                "\x1b[1;3mls:\x1b[0m unexpected argument '\x1b[1;3;38;5;{}m-{}\x1b[0m' found",
-                                Util::rgb_to_ansi256(251, 177, 60) , ch
-                            )
-                        ))
+                        _   => return Err(Error::throw(io::ErrorKind::UnexpectedEof, &["ls:", &ch.to_string()]))
                     }
                 }
             } else {
                 if arg.starts_with('/') {
-                    return Err(io::Error::new(
-                        io::ErrorKind::InvalidInput,
-                        format!(
-                            "\x1b[1;3mls:\x1b[0m cannot access '\x1b[1;38;5;{}m{}\x1b[0m': \x1b[38;5;{}mNo such file or directory\x1b[0m",
-                            Util::rgb_to_ansi256(251, 177, 60), arg, Util::rgb_to_ansi256(220, 45, 34)
-                        )
-                    ));
+                    return Err(Error::throw(io::ErrorKind::NotFound, &["ls:", arg]));
                 }
                 path = format!("{}/{}", path, arg);
             }
@@ -56,13 +45,7 @@ impl List {
         let content = match fs::read_dir(&path) {
             Ok(content) => content,
             Err(_) => {
-                return Err(io::Error::new(
-                    io::ErrorKind::NotFound,
-                    format!(
-                        "\x1b[1;3mls:\x1b[0m cannot access '\x1b[1;38;5;{}m{}\x1b[0m': \x1b[38;5;{}mNo such file or directory\x1b[0m",
-                        Util::rgb_to_ansi256(251, 177, 60), path.as_ref().display(), Util::rgb_to_ansi256(220, 45, 34)
-                    )
-                ));
+                return Err(Error::throw(io::ErrorKind::NotFound, &["ls:", path.as_ref().to_str().unwrap()]));
             }
         };
 
@@ -91,7 +74,7 @@ impl List {
             println!();
         }
 
-        Util::push_to_history(&format!("ls {}", args.join(" ")))?;
+        Tool::push_to_history(&format!("ls {}", args.join(" ")))?;
         Ok(())
     }
 }

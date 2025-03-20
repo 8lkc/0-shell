@@ -5,19 +5,17 @@ mod cd;
 mod history;
 mod mkdir;
 mod touch;
-mod cat;
+// mod cat;
 
 pub(super) use {
-    cat::Concatenate,
+//     cat::Concatenate,
+    cd::ChangeDirectory,
     echo::Echo,
     history::History,
     ls::List,
+    mkdir::MakeDirectory,
     pwd::PrintWorkingDirectory,
     touch::Touch
-};
-pub use {
-    cd::ChangeDirectory,
-    mkdir::MakeDirectory
 };
 use std::io;
 

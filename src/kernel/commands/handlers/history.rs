@@ -1,6 +1,6 @@
 use {
     super::CommandHandler,
-    crate::Util,
+    crate::Error,
     std::{
         fs::File,
         io::{self, BufRead}
@@ -34,10 +34,7 @@ impl CommandHandler for History {
             return Ok(());
         }
 
-        Err(io::Error::new(
-            io::ErrorKind::InvalidInput, 
-            format!("\x1b[1;3mhistory:\x1b[0m \x1b[38;5;{}mtoo many arguments\x1b[0m", Util::rgb_to_ansi256(220, 45, 34))
-        ))
+        Err(Error::throw(io::ErrorKind::ArgumentListTooLong, &["history:"]))
     }
 }
 

@@ -1,7 +1,9 @@
 use {
     super::CommandHandler,
     crate::{
-        kernel::DIRECTORY_STACK, Util,
+        kernel::DIRECTORY_STACK,
+        Error,
+        Tool
     },
     std::{fs, io}
 };
@@ -11,14 +13,11 @@ pub struct ChangeDirectory;
 impl CommandHandler for ChangeDirectory {
     fn execute(args: &[String]) -> Result<(), std::io::Error> {
         if args.is_empty() {
-            DIRECTORY_STACK::set_from_vec(vec!["~".to_string()]);
-            Util::push_to_history("cd")?;
+            DIRECTORY_STACK::set_from(vec!["~".to_string()]);
+            Tool::push_to_history("cd")?;
             return Ok(());
         } else if args.len() > 1 {
-            return Err(io::Error::new(
-                io::ErrorKind::InvalidInput, 
-                format!("\x1b[1;3mcd:\x1b[0m \x1b[38;5;{}mtoo many arguments\x1b[0m", Util::rgb_to_ansi256(220, 45, 34))
-            ));
+            return Err(Error::throw(io::ErrorKind::ArgumentListTooLong, &["cd:"]));
         }
 
         let mut current_path = DIRECTORY_STACK::to_string();
@@ -38,20 +37,14 @@ impl CommandHandler for ChangeDirectory {
                         current_stack.push(part.to_string());
                         current_path = current_stack.join("/");
                     } else {
-                        return Err(io::Error::new(
-                            io::ErrorKind::Other,
-                            format!(
-                                "\x1b[1;3mcd:\x1b[0m \x1b[38;5;{}mno such directory:\x1b[0m \x1b[1;38;5;{}m{}\x1b[0m",
-                                Util::rgb_to_ansi256(220, 45, 34), Util::rgb_to_ansi256(251, 177, 60), part
-                            )
-                        ));
+                        return Err(Error::throw(io::ErrorKind::NotFound, &["cd:", part]));
                     }
                 }
             }
         }
 
-        DIRECTORY_STACK::set_from_vec(current_stack);
-        Util::push_to_history(&format!("cd {}", args[0]))?;
+        DIRECTORY_STACK::set_from(current_stack);
+        Tool::push_to_history(&format!("cd {}", args[0]))?;
         Ok(())
     }
 }

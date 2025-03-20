@@ -1,6 +1,6 @@
 use {
     super::CommandHandler,
-    crate::Util,
+    crate::Tool,
     std::io::{self, Write}
 };
 
@@ -40,7 +40,7 @@ impl CommandHandler for Echo {
                 if miss_closed_quote {
                     while input.trim() != opened_quote {
                         input.clear();
-                        print!("\x1b[3m{}quote>\x1b[0m ", if opened_quote == "'" { "" } else { "d" });
+                        print!("{} ", Tool::italicify(&format!("{}quote>", if opened_quote == "'" {""} else {"d"})));
                         io::stdout().flush().expect("⚠️ Failed to flush prompt");
                         io::stdin()
                             .read_line(&mut input)
@@ -52,7 +52,7 @@ impl CommandHandler for Echo {
 
         let output = args.join(" ");
         println!("{}", output);
-        Util::push_to_history(&format!("echo {}", output))?;
+        Tool::push_to_history(&format!("echo {}", output))?;
         Ok(())
     }
 }

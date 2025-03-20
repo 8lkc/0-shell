@@ -19,7 +19,7 @@ impl DIRECTORY_STACK {
         DIR_STACK.lock().unwrap().clone()
     }
 
-    pub(super) fn set_from_vec(vec: Vec<String>) {
+    pub(super) fn set_from(vec: Vec<String>) {
         *DIR_STACK.lock().unwrap() = vec;
     }
 

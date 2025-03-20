@@ -4,17 +4,17 @@ use {
     crate::{
         command,
         kernel::commands::handlers::CommandHandler,
-        Util
+        Error
     },
     handlers::{
-        Concatenate,
+    //     Concatenate,
         ChangeDirectory,
         Echo,
         History,
         List,
         MakeDirectory,
         PrintWorkingDirectory,
-        Touch
+       Touch
     },
     std::io
 };
@@ -43,10 +43,8 @@ macro_rules! command {
             "history"  => History::execute($arguments),
             "mkdir"    => MakeDirectory::execute($arguments),
             "touch"    => Touch::execute($arguments),
-            "cat"      => Concatenate::execute($arguments),
-            _ => Err(io::Error::new(
-                io::ErrorKind::Other, format!("Command '\x1b[1;3;38;5;{}m{}\x1b[0m' not found", Util::rgb_to_ansi256(220, 45, 34), $command)
-            ))
+            // "cat"      => Concatenate::execute($arguments),
+            _ => Err(Error::throw(io::ErrorKind::InvalidInput, &[$command]))
         }
     };
 }

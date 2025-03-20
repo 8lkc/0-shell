@@ -2,12 +2,11 @@ mod commands;
 mod dir_stack;
 
 use {
-    crate::Util,
+    crate::Tool,
     commands::Command,
     dir_stack::DIRECTORY_STACK,
     std::{
         env,
-        fs::File,
         io::{self, BufRead, Write},
         path
     }
@@ -30,7 +29,7 @@ impl Shell {
     
             if input.trim() == "exit" {
                 println!();
-                Util::push_to_history("exit")?;
+                Tool::push_to_history("exit")?;
                 return Ok(());
             }
     
@@ -43,12 +42,9 @@ impl Shell {
 
     fn show_header() -> io::Result<()> {
         println!("\n🚀 Welcome to . . .\x1b[0m\n");
-        let file = File::open("assets/header.txt")?;
-        let reader = io::BufReader::new(file);
-        for line in reader.lines() {
-            println!("\x1b[1;38;5;{}m{}\x1b[0m", Util::rgb_to_ansi256(253, 240, 213), line?)
-        }
-        println!("\n🔥 Type '\x1b[1;3;38;5;{}mexit\x1b[0m' to quit the shell 😇\n", Util::rgb_to_ansi256(46, 196, 182));
+        let reader = Tool::read_file("assets/header.txt")?;
+        for line in reader.lines() { println!("{}", Tool::boldify(&Tool::colorize(&line?, (253, 240, 213)))) }
+        println!("\n🔥 Type '{}' to quit the shell 😇\n", Tool::boldify(&Tool::italicify(&Tool::colorize("exit", (46, 196, 182)))));
         Ok(())
     }
 
@@ -60,17 +56,16 @@ impl Shell {
         if let Some(home) = home {
             let home_path = path::Path::new(&home);
             if let Ok(relative_path) = dir_path.strip_prefix(home_path) {
-                print!(
-                    "\x1b[1;38;5;{}m[~/{}]\x1b[38;5;{}m:\x1b[38;5;{}m{}\x1b[38;5;{}m$\x1b[0m ",
-                    Util::rgb_to_ansi256(143, 217, 73),
-                    relative_path.display(),
-                    Util::rgb_to_ansi256(253, 254, 250),
-                    Util::rgb_to_ansi256(109, 156, 192),
-                    DIRECTORY_STACK::to_string(),
-                    Util::rgb_to_ansi256(253, 254, 250)
+                print!("{} ",
+                    Tool::boldify(&format!("{}{}{}{}",
+                        Tool::colorize(&format!("[~/{}]", relative_path.display()), (143, 217, 73)),
+                        Tool::colorize(":", (253, 254, 250)),
+                        Tool::colorize(&DIRECTORY_STACK::to_string(), (109, 156, 192)),
+                        Tool::colorize("$", (253, 254, 250))
+                    ))
                 );
-            } else { return Err(io::Error::new(io::ErrorKind::NotFound, "⛔ Prompt not found")) }
-        } else { return Err(io::Error::new(io::ErrorKind::NotFound, "⛔ Prompt not found")) }
+            } else { return Err(io::Error::new(io::ErrorKind::InvalidInput, "⛔ Prompt not found")) }
+        } else { return Err(io::Error::new(io::ErrorKind::InvalidInput, "⛔ Prompt not found")) }
 
         // Flush to ensure the prompt is displayed immediately
         io::stdout().flush().expect("⚠️ Failed to flush prompt");

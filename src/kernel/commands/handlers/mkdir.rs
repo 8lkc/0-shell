@@ -4,8 +4,7 @@ use {
         CommandHandler
     },
     crate::{
-        kernel::DIRECTORY_STACK,
-        Util
+        kernel::DIRECTORY_STACK, Error, Tool
     },
     std::{fs, io}
 };
@@ -19,24 +18,15 @@ impl CommandHandler for MakeDirectory {
                 MakeDirectory::check_nesting("mkdir", &arg)?;
 
                 if fs::create_dir(format!("{}/{}", DIRECTORY_STACK::to_string(), arg)).is_err() {
-                    return Err(io::Error::new(
-                        io::ErrorKind::InvalidInput, 
-                        format!(
-                            "\x1b[1;3mmkdir:\x1b[0m cannot create directory '\x1b[1;38;5;{}m{}\x1b[0m': \x1b[38;5;{}mFile exists\x1b[0m",
-                            Util::rgb_to_ansi256(251, 177, 60), arg, Util::rgb_to_ansi256(220, 45, 34)
-                        )
-                    ));
+                    return Err(Error::throw(io::ErrorKind::AlreadyExists, &["mkdir:", arg]));
                 }
             }
 
-            Util::push_to_history(&format!("mkdir {}", args.join(" ")))?;
+            Tool::push_to_history(&format!("mkdir {}", args.join(" ")))?;
             return Ok(());
         }
 
-        Err(io::Error::new(
-            io::ErrorKind::InvalidInput, 
-            format!("\x1b[1;3mmkdir:\x1b[0m \x1b[38;5;{}mmissing operand\x1b[0m", Util::rgb_to_ansi256(220, 45, 34))
-        ))
+        Err(Error::throw(io::ErrorKind::NotSeekable, &["mkdir:"]))
     }
 }
 
@@ -45,13 +35,7 @@ impl MakeDirectory {
         let parts = argument.split("/").collect::<Vec<&str>>();
         if parts.len() > 1 {
             if !ChangeDirectory::is_subdir(&DIRECTORY_STACK::to_string(), parts[0]) {
-                return Err(io::Error::new(
-                    io::ErrorKind::InvalidInput, 
-                    format!(
-                        "\x1b[1;3m{}:\x1b[0m cannot create directory '\x1b[1;38;5;{}m{}\x1b[0m': \x1b[38;5;{}mNo such file or directory\x1b[0m",
-                        command, Util::rgb_to_ansi256(251, 177, 60), argument, Util::rgb_to_ansi256(220, 45, 34)
-                    )
-                ));
+                return Err(Error::throw(io::ErrorKind::HostUnreachable, &[command, argument]));
             }
             
             // TO-DO: '-p' option

@@ -1,6 +1,6 @@
 use std::{
     fs::{File, OpenOptions},
-    io::{self, BufReader, Write},
+    io::{self, BufRead, BufReader, Write},
     path::Path
 };
 
@@ -31,6 +31,14 @@ impl Tool {
     pub fn read_file<P: AsRef<Path>>(path: P) -> Result<BufReader<File>, io::Error> {
         let file = File::open(path)?;
         Ok(io::BufReader::new(file))
+    }
+
+    pub fn show_header() -> Result<(), io::Error> {
+        println!("\n🚀 Welcome to {}\n", Tool::boldify(". . ."));
+        let reader = Tool::read_file("assets/header.txt")?;
+        for line in reader.lines() { println!("{}", Tool::boldify(&Tool::colorize(&line?, (253, 240, 213)))) }
+        println!("\n🔥 Type '{}' to quit the shell 😇\n", Tool::boldify(&Tool::italicify(&Tool::colorize("exit", (46, 196, 182)))));
+        Ok(())
     }
 
     fn rgb_to_ansi256(rgb: (u8, u8, u8)) -> u8 {

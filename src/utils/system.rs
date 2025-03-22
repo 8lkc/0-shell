@@ -41,21 +41,19 @@ impl System {
                         match character {
                             '\n' => {
                                 writeln!(stdout, "\r").unwrap();
-                                // if !input.is_empty() {
-                                    if input == "exit" && !prompt_getter.is_none() {
-                                        write!(stdout, "\r\n").unwrap();
-                                        running.store(false, Ordering::SeqCst);
-                                    } else {
-                                        if !input.is_empty() {
-                                            let _ = handler(&input);
-                                        }
-                                        if let Some(get_prompt) = prompt_getter {
-                                            write!(stdout, "\r{}", get_prompt()?).unwrap();
-                                            stdout.flush().unwrap();
-                                        }
-                                        input.clear();
+                                if input == "exit" && !prompt_getter.is_none() {
+                                    write!(stdout, "\r\n").unwrap();
+                                    running.store(false, Ordering::SeqCst);
+                                } else {
+                                    if !input.is_empty() {
+                                        let _ = handler(&input);
                                     }
-                                // }
+                                    if let Some(get_prompt) = prompt_getter {
+                                        write!(stdout, "\r{}", get_prompt()?).unwrap();
+                                        stdout.flush().unwrap();
+                                    }
+                                    input.clear();
+                                }
                             } _ => {
                                 write!(stdout, "{}", character).unwrap();
                                 input.push(character);
@@ -63,14 +61,17 @@ impl System {
                         }
                         stdout.flush().unwrap();
                     }
-                    // termion::event::Key::Backspace => {
-                    //     if !input.is_empty() {
-                    //         input.pop();
-                    //         write!(stdout, "\r{}{}", prompt, input).unwrap();
-                    //         write!(stdout, " \r{}{}", prompt, input).unwrap(); // Clear the last character
-                    //         stdout.flush().unwrap();
-                    //     }
-                    // }
+                    termion::event::Key::Backspace => {
+                        if !input.is_empty() {
+                            input.pop();
+                            let prompt = if let Some(get_prompt) = prompt_getter {
+                                get_prompt()?
+                            } else { String::new() };
+                            write!(stdout, "\r{}{}", prompt, input).unwrap();
+                            write!(stdout, " \r{}{}", prompt, input).unwrap(); // Clear the last character
+                            stdout.flush().unwrap();
+                        }
+                    }
                     _ => {}
                 }
             }

@@ -68,3 +68,13 @@ pwd
 cd ../new-dir
 pwd
 cd
+ls -a
+ls -a new-dir
+ls -a a-dir
+cd new-dir
+ls 
+ls 
+cd new-dir
+ls 
+pwd
+cd

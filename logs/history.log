@@ -52,3 +52,19 @@ exit
 cd
 exit
 exit
+cd a-dir
+ls 
+ls -a
+ls 
+pwd
+cd a-dir
+pwd
+cd
+cd a-dir
+ls 
+ls -a
+cd a-dir
+pwd
+cd ../new-dir
+pwd
+cd

@@ -5,7 +5,7 @@ use termion::{input::TermRead, raw::IntoRawMode};
 pub struct System;
 
 impl System {
-    pub fn add_io_listener<Func>(prompt: &str, handler: Func) -> Result<(), io::Error>
+    pub fn add_io_listener<Func>(prompt_getter: Option<fn() -> Result<String, io::Error>>, handler: Func) -> Result<(), io::Error>
     where
         Func: Fn(&str) -> Result<(), io::Error> {
 
@@ -21,42 +21,56 @@ impl System {
         let mut stdin = stdin.lock().keys();
         let mut input = String::new();
 
-        write!(stdout, "{}", prompt).unwrap();
-        stdout.flush().unwrap();
+        if let Some(get_prompt) = prompt_getter {
+            write!(stdout, "\r{}", get_prompt()?).unwrap();
+            stdout.flush().unwrap();
+        }
 
         while running.load(Ordering::SeqCst) {
             if let Some(Ok(key)) = stdin.next() {
                 match key {
                     termion::event::Key::Ctrl('c') => {
-                        // running.store(false, Ordering::SeqCst);
-                        write!(stdout, "\r\n{}", prompt).unwrap();
-                        stdout.flush().unwrap();
-                    }
-                    termion::event::Key::Char(c) => {
-                        if c == '\n' {
-                            write!(stdout, "\r\n").unwrap();
-                            if input == "exit" {
-                                write!(stdout, "\r").unwrap();
-                                running.store(false, Ordering::SeqCst);
-                            } else {
-                                let _ = handler(&input);
-                                write!(stdout, "\r{}", prompt).unwrap();
-                                input = String::new();
-                            }
-                        } else {
-                            write!(stdout, "{}", c).unwrap();
-                            input.push(c);
-                        }
-                        stdout.flush().unwrap();
-                    }
-                    termion::event::Key::Backspace => {
-                        if !input.is_empty() {
-                            input.pop();
-                            write!(stdout, "\r{}{}", prompt, input).unwrap();
-                            write!(stdout, " \r{}{}", prompt, input).unwrap(); // Clear the last character
+                        if let Some(get_prompt) = prompt_getter {
+                            write!(stdout, "\r\n{}", get_prompt()?).unwrap();
                             stdout.flush().unwrap();
+                        } else {
+                            running.store(false, Ordering::SeqCst);
                         }
                     }
+                    termion::event::Key::Char(character) => {
+                        match character {
+                            '\n' => {
+                                writeln!(stdout, "\r").unwrap();
+                                // if !input.is_empty() {
+                                    if input == "exit" && !prompt_getter.is_none() {
+                                        write!(stdout, "\r\n").unwrap();
+                                        running.store(false, Ordering::SeqCst);
+                                    } else {
+                                        if !input.is_empty() {
+                                            let _ = handler(&input);
+                                        }
+                                        if let Some(get_prompt) = prompt_getter {
+                                            write!(stdout, "\r{}", get_prompt()?).unwrap();
+                                            stdout.flush().unwrap();
+                                        }
+                                        input.clear();
+                                    }
+                                // }
+                            } _ => {
+                                write!(stdout, "{}", character).unwrap();
+                                input.push(character);
+                            }
+                        }
+                        stdout.flush().unwrap();
+                    }
+                    // termion::event::Key::Backspace => {
+                    //     if !input.is_empty() {
+                    //         input.pop();
+                    //         write!(stdout, "\r{}{}", prompt, input).unwrap();
+                    //         write!(stdout, " \r{}{}", prompt, input).unwrap(); // Clear the last character
+                    //         stdout.flush().unwrap();
+                    //     }
+                    // }
                     _ => {}
                 }
             }

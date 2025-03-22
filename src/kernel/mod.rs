@@ -5,7 +5,7 @@ use {
     crate::{System, Tool},
     commands::Command,
     dir_stack::DIRECTORY_STACK,
-    std::{env, io::{self, Write}, path}
+    std::{env, io, path}
 };
 
 pub struct Shell;
@@ -15,34 +15,12 @@ impl Shell {
         DIRECTORY_STACK::init();
         Tool::show_header()?;
 
-        // loop {
-            System::add_io_listener(&Self::get_prompt()?, |input| {
-                Ok(println!("{}", input))
-            })?;
-
-// System::add_io_listener(|input| {
-//     // Define the specific operation here
-//     println!("You entered: {}", input);
-// })?;
-
+        System::add_io_listener(Some(Self::get_prompt), |input| {
+            if let Err(err_msg) = Command::check(&input) {
+                println!("⛔ {}", err_msg);
+            }
             Ok(())
-
-            // let mut input = String::new();
-            // io::stdin()
-            //     .read_line(&mut input)
-            //     .expect("⛔ Failed to read line");
-    
-            // if input.trim() == "exit" {
-            //     println!();
-            //     Tool::push_to_history("exit")?;
-            //     return Ok(());
-            // }
-    
-            // input = input.trim().to_string();
-            // if !input.is_empty() {
-            //     if let Err(err_msg) = Command::check(&input) { println!("⛔ {}", err_msg); }
-            // }
-        // }
+        })
     }
 
     fn get_prompt() -> Result<String, io::Error> {
